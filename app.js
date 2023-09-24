@@ -56,7 +56,7 @@ app.post("/login", async (request, response) => {
         }
     } catch (error){
         console.log(`authentication error: ${error}`)
-        response.status(500).send("An error occured")
+        response.status(500).send("An error occured while authentication")
     }
 })
 
