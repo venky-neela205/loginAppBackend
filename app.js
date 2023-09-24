@@ -3,8 +3,6 @@ const { open } = require("sqlite")
 const sqlite3 = require("sqlite3")
 const cors = require("cors")
 const path = require("path")
-const { get } = require("express/lib/response")
-const { captureRejectionSymbol } = require("events")
 
 const dbPath = path.join(__dirname, "loginApplication.db")
 
