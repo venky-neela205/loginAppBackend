@@ -20,8 +20,8 @@ const InitializeDbAndServer = async () => {
             driver : sqlite3.Database,
         });
 
-        app.listen(3000, () => 
-            console.log("server running at http://localhost:3000/")
+        app.listen(3001, () => 
+            console.log("server running at http://localhost:3001/")
         )
     }catch(error){
         console.log(`DB error : ${error.message}`);
@@ -41,39 +41,52 @@ app.post("/login", async (request, response) => {
         FROM 
           users
         WHERE
-         username = ${username};`;
+         username = '${username}';`;
 
          const getUser = await db.get(getUserQuery)
-        //  response.send(getUser)
+
         if(getUser){
             if(getUser.password === password){
-                response.send("Login Successful")
+                response.send({message:"Login Successful"})
             }else{
-                response.send("Invalid Credentials")
+                response.send({error:"Invalid Credentials"})
             }
         }else{
-            response.send("User not found")
+            response.send({error:"User not found"})
         }
     } catch (error){
         console.log(`authentication error: ${error}`)
-        response.status(500).send("An error occured")
+        response.status(500).send({error:"An error occured while authentication"})
     }
 })
 
 
 app.post("/register", async (request, response) => {
     const {username, password} = request.body
-
+    console.log(username, password)
     try{
         const insertUserQuery = `
             INSERT INTO users
                 (username, password)
             VALUES
-                (${username}, ${password});`;
-        const insertUser = db.run(insertUserQuery)
+                ('${username}', '${password}');`;
+        const insertUser = await db.run(insertUserQuery)
+        response.send({message:"Registration Successful"})
 
     } catch(error){
         console.log(`registration error: ${error}`)
-        response.status(500).send("An error occured while registration")
+        response.status(500).send({error:"An error occured while registration"})
     }
+})
+
+app.get('/getUsers', async (request, response) => {
+
+    const getUsersQuery = `
+        SELECT
+          *
+        FROM 
+          users;`;
+
+    const getUsers = await db.get(getUsersQuery)
+    response.send(getUsers)
 })
